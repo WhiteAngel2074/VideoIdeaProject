@@ -10,15 +10,18 @@ const exphbs = require("express-handlebars");
 var methodOverride = require("method-override");
 const flash = require("connect-flash");
 const session = require("express-session");
-var bcrypt = require('bcryptjs'); 
-const passport = require('passport');
+var bcrypt = require("bcryptjs");
+const passport = require("passport");
+
+// load helpers auth
+const { ensureAuthentificated } = require("./helpers/auth");
 
 // Load Idea Model
 require("./models/Idea");
 const Idea = mongoose.model("ideas");
 
-// passport config 
-require('./config/passport')(passport);
+// passport config
+require("./config/passport")(passport);
 
 var index = require("./routes/index");
 var users = require("./routes/users");
@@ -43,7 +46,7 @@ app.get("/about", (req, res) => {
 
 // uncomment after placing your favicon in /public
 
-app.use(favicon(path.join(__dirname, 'public', 'h.ico')));
+app.use(favicon(path.join(__dirname, "public", "h.ico")));
 
 app.use(logger("dev"));
 app.use(bodyParser.json());

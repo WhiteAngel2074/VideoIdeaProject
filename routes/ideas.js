@@ -4,8 +4,11 @@ var bodyParser = require("body-parser");
 var idea = require("../models/Idea");
 var methodOverride = require("method-override");
 
+// load helpers auth
+const { ensureAuthentificated } = require("../helpers/auth");
+
 /* GET ideas listing. */
-router.get("/", function(req, res, next) {
+router.get("/", ensureAuthentificated, function(req, res, next) {
   idea
     .find({})
     .sort({ date: "desc" })
@@ -17,12 +20,12 @@ router.get("/", function(req, res, next) {
 });
 
 /* Add an Idea FORM  */
-router.get("/add", (req, res) => {
+router.get("/add", ensureAuthentificated, (req, res) => {
   res.render("ideas/add");
 });
 
 // Edit Page
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:id", ensureAuthentificated, (req, res) => {
   idea
     .findOne({
       _id: req.params.id
@@ -35,7 +38,7 @@ router.get("/edit/:id", (req, res) => {
 });
 
 // validation & add idea
-router.post("/", (req, res) => {
+router.post("/", ensureAuthentificated, (req, res) => {
   let errors = [];
 
   if (!req.body.title) {
@@ -65,7 +68,7 @@ router.post("/", (req, res) => {
 });
 
 // EDIT PUT idea
-router.put("/:id", (req, res) => {
+router.put("/:id", ensureAuthentificated, (req, res) => {
   idea
     .findOne({
       _id: req.params.id
@@ -83,9 +86,9 @@ router.put("/:id", (req, res) => {
 });
 
 // DELETE
-router.delete("/:id", (req, res) => {
+router.delete("/:id", ensureAuthentificated, (req, res) => {
   idea.remove({ _id: req.params.id }).then(() => {
-    req.flash('success_msg', 'Video Idea removed')
+    req.flash("success_msg", "Video Idea removed");
     res.redirect("/ideas");
   });
 });
