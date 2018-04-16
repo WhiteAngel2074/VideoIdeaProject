@@ -10,7 +10,7 @@ const { ensureAuthentificated } = require("../helpers/auth");
 /* GET ideas listing. */
 router.get("/", ensureAuthentificated, function(req, res, next) {
   idea
-    .find({})
+    .find({ user: req.user.id })
     .sort({ date: "desc" })
     .then(ideas => {
       res.render("ideas/index", {
@@ -31,9 +31,12 @@ router.get("/edit/:id", ensureAuthentificated, (req, res) => {
       _id: req.params.id
     })
     .then(idea => {
-      res.render("ideas/edit", {
-        idea: idea
-      });
+      if (idea.user != req.user.id) {
+        req.flash("error_msg", "Not Authorized");
+        res.redirect("/ideas");
+      } else {
+        res.render("ideas/edit", { idea: idea });
+      }
     });
 });
 
@@ -57,7 +60,8 @@ router.post("/", ensureAuthentificated, (req, res) => {
     {
       const newUser = {
         title: req.body.title,
-        details: req.body.details
+        details: req.body.details,
+        user: req.user.id
       };
       new idea(newUser).save().then(idea => {
         req.flash("success_msg", "Video Idea added");
