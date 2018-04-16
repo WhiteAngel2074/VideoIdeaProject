@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+//DB Config
 const db = require("./config/db.js");
 const express = require("express");
 var path = require("path");
@@ -12,6 +13,12 @@ const flash = require("connect-flash");
 const session = require("express-session");
 var bcrypt = require("bcryptjs");
 const passport = require("passport");
+
+// Connect to DEV_database OR PROD_DataBase
+mongoose
+  .connect(db.mongoURI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 // load helpers auth
 const { ensureAuthentificated } = require("./helpers/auth");

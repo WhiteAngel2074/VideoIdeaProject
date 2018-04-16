@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
-mongoose
-  .connect("mongodb://127.0.0.1/vidjot-dev")
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
-
-module.exports = mongoose;
+if (process.env.NODE_ENV === "production") {
+  module.exports = {
+    mongoURI: "mongodb://root:root@ds239309.mlab.com:39309/videoprod"
+  };
+} else {
+  module.exports = { mongoURI: "mongodb://127.0.0.1/vidjot-dev" };
+}
